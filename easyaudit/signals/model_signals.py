@@ -103,7 +103,7 @@ def pre_save(sender, instance, raw, using, update_fields, **kwargs):
     except Exception as e:
         # this hack is to prevent the log message when creating a table with
         # m2m relationships (Transfer for instance). There is an issue on the
-        # library's repo: https://github.com/soynatan/django-easy-audit/issues/78
+        # library's repo: https://github.com/soynatan/django-easy-audit/issues/74
         # and the authors acknowledged it and added this exception handling, but
         # still, logger.exception logs to kibana, so we circumvent it.
         if 'needs to have a value for field' not in str(e):
