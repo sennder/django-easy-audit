@@ -100,8 +100,14 @@ def pre_save(sender, instance, raw, using, update_fields, **kwargs):
                     'datetime': timezone.now(),
                     'user_pk_as_string': str(user.pk) if user else user
                 })
-    except Exception:
-        logger.exception('easy audit had a pre-save exception.')
+    except Exception as e:
+        # this hack is to prevent the log message when creating a table with
+        # m2m relationships (Transfer for instance). There is an issue on the
+        # library's repo: https://github.com/soynatan/django-easy-audit/issues/74
+        # and the authors acknowledged it and added this exception handling, but
+        # still, logger.exception logs to kibana, so we circumvent it.
+        if 'needs to have a value for field' not in str(e):
+            logger.exception('easy audit had a pre-save exception.')
 
 
 def post_save(sender, instance, created, raw, using, update_fields, **kwargs):
